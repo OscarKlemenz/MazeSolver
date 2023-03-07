@@ -1,7 +1,7 @@
 import sys, time
 
 # Name of file containing the maze
-MAZE_FILENAME = 'mazes/maze-VLarge.txt'
+MAZE_FILENAME = 'mazes/maze-Easy.txt'
 
 nodesExplored = 0
 
@@ -86,29 +86,14 @@ def findConnecting(maze, coord):
     from a given space in the maze
     '''
 
-
     availableNodes = []
     
-    yCoord = coord[0]
-    xCoord = coord[1]
+    yCoord, xCoord = coord
 
-    # For all of these conditionals an additonal check is made, for the case when
-    # we are checking a start or goal node
-    if (yCoord < (len(maze)-1)):
-        if maze[yCoord + 1][xCoord] == '-':
-            availableNodes.append([yCoord+1,xCoord])
-        
-    if(yCoord > 0):  
-        if maze[yCoord - 1][xCoord] == '-':
-            availableNodes.append([yCoord-1,xCoord])
-
-    if(xCoord < (len(maze[0])-1)):
-        if maze[yCoord][xCoord + 1] == '-':
-            availableNodes.append([yCoord,xCoord + 1])
-
-    if(xCoord > 0):
-        if maze[yCoord][xCoord - 1] == '-':
-            availableNodes.append([yCoord,xCoord-1])
+    for dy, dx in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+        ny, nx = yCoord + dy, xCoord + dx
+        if 0 <= ny < len(maze) and 0 <= nx < len(maze[0]) and maze[ny][nx] == '-':
+            availableNodes.append([ny, nx])
 
     return availableNodes
 
@@ -165,6 +150,7 @@ def dfsWithStats(maze, start, goal):
     Performs a dfs and produces statistics about it
     '''
 
+    # Starts recording time
     startTime = time.time()
 
     path = dfs(maze, start, goal)
@@ -172,7 +158,7 @@ def dfsWithStats(maze, start, goal):
     endTime = time.time()
 
     global nodesExplored
-
+    # Adds the start node to the path
     path.insert(0, start)
     visualisePath(maze, path)
 
@@ -181,7 +167,7 @@ def dfsWithStats(maze, start, goal):
     print('Nodes explored: ' )
     print(nodesExplored)
     print('Time: ' )
-    print(endTime-startTime)
+    print("{:.6f}".format(endTime-startTime))
     print('Steps in path: ')
     print(len(path))
 
